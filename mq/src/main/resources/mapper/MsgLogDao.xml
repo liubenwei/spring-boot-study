@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.liu.mq.rabbitmq.dao.MsgLogDao">
+
+    <resultMap type="com.liu.mq.rabbitmq.entity.MsgLog" id="MsgLogMap">
+        <result property="msgId" column="msg_id" jdbcType="VARCHAR"/>
+        <result property="msg" column="msg" jdbcType="VARCHAR"/>
+        <result property="exchange" column="exchange" jdbcType="VARCHAR"/>
+        <result property="routingKey" column="routing_key" jdbcType="VARCHAR"/>
+        <result property="status" column="status" jdbcType="INTEGER"/>
+        <result property="tryCount" column="try_count" jdbcType="INTEGER"/>
+        <result property="nextTryTime" column="next_try_time" jdbcType="TIMESTAMP"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="MsgLogMap">
+        select
+          msg_id, msg, exchange, routing_key, status, try_count, next_try_time, create_time, update_time
+        from study.msg_log
+        where msg_id = #{msgId}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="MsgLogMap">
+        select
+          msg_id, msg, exchange, routing_key, status, try_count, next_try_time, create_time, update_time
+        from study.msg_log
+        limit #{offset}, #{limit}
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryAll" resultMap="MsgLogMap">
+        select
+          msg_id, msg, exchange, routing_key, status, try_count, next_try_time, create_time, update_time
+        from study.msg_log
+        <where>
+            <if test="msgId != null and msgId != ''">
+                and msg_id = #{msgId}
+            </if>
+            <if test="msg != null and msg != ''">
+                and msg = #{msg}
+            </if>
+            <if test="exchange != null and exchange != ''">
+                and exchange = #{exchange}
+            </if>
+            <if test="routingKey != null and routingKey != ''">
+                and routing_key = #{routingKey}
+            </if>
+            <if test="status != null">
+                and status = #{status}
+            </if>
+            <if test="tryCount != null">
+                and try_count = #{tryCount}
+            </if>
+            <if test="nextTryTime != null">
+                and next_try_time = #{nextTryTime}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+            <if test="updateTime != null">
+                and update_time = #{updateTime}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" >
+        insert into study.msg_log(msg_id,msg, exchange, routing_key, status, try_count, next_try_time, create_time, update_time)
+        values (#{msgLog.msgId},#{msgLog.msg}, #{msgLog.exchange}, #{msgLog.routingKey}, #{msgLog.status}, #{msgLog.tryCount}, #{msgLog.nextTryTime}, #{msgLog.createTime}, #{msgLog.updateTime})
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update study.msg_log
+        <set>
+            <if test="msgLog.msg != null and msgLog.msg != ''">
+                msg = #{msgLog.msg},
+            </if>
+            <if test="msgLog.exchange != null and msgLog.exchange != ''">
+                exchange = #{msgLog.exchange},
+            </if>
+            <if test="msgLog.routingKey != null and msgLog.routingKey != ''">
+                routing_key = #{msgLog.routingKey},
+            </if>
+            <if test="msgLog.status != null">
+                status = #{msgLog.status},
+            </if>
+            <if test="msgLog.tryCount != null">
+                try_count = #{msgLog.tryCount},
+            </if>
+            <if test="msgLog.nextTryTime != null">
+                next_try_time = #{msgLog.nextTryTime},
+            </if>
+            <if test="msgLog.createTime != null">
+                create_time = #{msgLog.createTime},
+            </if>
+            <if test="msgLog.updateTime != null">
+                update_time = #{msgLog.updateTime},
+            </if>
+        </set>
+        where msg_id = #{msgLog.msgId}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from study.msg_log where msg_id = #{msgId}
+    </delete>
+
+</mapper>
