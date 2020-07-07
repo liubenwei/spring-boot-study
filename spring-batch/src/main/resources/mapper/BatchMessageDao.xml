@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.liu.springbatch.dao.BatchMessageDao">
+
+    <resultMap type="com.liu.springbatch.entity.BatchMessage" id="BatchMessageMap">
+        <result property="objectId" column="object_id" jdbcType="INTEGER"/>
+        <result property="content" column="content" jdbcType="VARCHAR"/>
+        <result property="lastModifiedTime" column="last_modified_time" jdbcType="TIMESTAMP"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="BatchMessageMap">
+        select
+          object_id, content, last_modified_time, create_time
+        from study.batch_message
+        where object_id = #{objectId}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="BatchMessageMap">
+        select
+          object_id, content, last_modified_time, create_time
+        from study.batch_message
+        limit #{offset}, #{limit}
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryAll" resultMap="BatchMessageMap">
+        select
+          object_id, content, last_modified_time, create_time
+        from study.batch_message
+        <where>
+            <if test="objectId != null and objectId != ''">
+                and object_id = #{objectId}
+            </if>
+            <if test="content != null and content != ''">
+                and content = #{content}
+            </if>
+            <if test="lastModifiedTime != null">
+                and last_modified_time = #{lastModifiedTime}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="objectId" useGeneratedKeys="true">
+        insert into study.batch_message(content, last_modified_time, create_time)
+        values (#{content}, #{lastModifiedTime}, #{createTime})
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update study.batch_message
+        <set>
+            <if test="content != null and content != ''">
+                content = #{content},
+            </if>
+            <if test="lastModifiedTime != null">
+                last_modified_time = #{lastModifiedTime},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime},
+            </if>
+        </set>
+        where object_id = #{objectId}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from study.batch_message where object_id = #{objectId}
+    </delete>
+
+</mapper>
